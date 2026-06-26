@@ -30,6 +30,8 @@ from werkzeug.utils import secure_filename
 from core.settings import settings
 from error import bad_request
 from worker import ingest_worker
+from marketplace import marketplace_bp
+from marketplace.models import init_db
 
 # os.environ["LANGCHAIN_HANDLER"] = "langchain"
 
@@ -80,6 +82,8 @@ else:
     embeddings_key_set = False
 
 app = Flask(__name__)
+app.register_blueprint(marketplace_bp)
+init_db()
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER = "inputs"
 app.config['CELERY_BROKER_URL'] = settings.CELERY_BROKER_URL
 app.config['CELERY_RESULT_BACKEND'] = settings.CELERY_RESULT_BACKEND

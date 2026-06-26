@@ -1,7 +1,8 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navigation from './Navigation';
 import Conversation from './conversation/Conversation';
 import About from './About';
+import MarketplaceApp from './marketplace/MarketplaceApp';
 import { useState } from 'react';
 import { ActiveState } from './models/misc';
 import { inject } from '@vercel/analytics';
@@ -9,10 +10,21 @@ import { inject } from '@vercel/analytics';
 inject();
 
 export default function App() {
+  const location = useLocation();
+  const isMarketplace = location.pathname.startsWith('/marketplace');
+
   //TODO : below media query is disjoint from tailwind. Please wire it together.
   const [navState, setNavState] = useState<ActiveState>(
     window.matchMedia('(min-width: 768px)').matches ? 'ACTIVE' : 'INACTIVE',
   );
+
+  if (isMarketplace) {
+    return (
+      <Routes>
+        <Route path="/marketplace/*" element={<MarketplaceApp />} />
+      </Routes>
+    );
+  }
 
   return (
     <div className="min-h-full min-w-full">
